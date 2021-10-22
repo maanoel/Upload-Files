@@ -1,0 +1,13 @@
+COMANDS LIST
+npm init -y --scope @maanoel
+npm i -D jest@27 nodemon@2.0 
+npm i pino@6.8 pino-pretty@5.1
+npm i socket.io@4.1
+npm rm remove
+npx jest --init 
+
+Usa o -D pois é um modulo de desenvolvimento, para testes e hostreload da aplicação.
+
+Manha para remover comentários no visual studio code: 
+
+ctrl + F e digitar //* 
