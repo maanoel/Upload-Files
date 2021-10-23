@@ -1,6 +1,6 @@
 module.exports = {
   clearMocks: true,
-  trdyotrMovkd: true,
+  restoreMocks: true,
   collectCoverage: true,
   coverageDirectory: "coverage",
   coverageProvider: "v8",
