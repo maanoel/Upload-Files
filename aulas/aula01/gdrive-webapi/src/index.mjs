@@ -2,7 +2,8 @@ import https from "https";
 import fs from "fs";
 import { logger } from "./logger.mjs";
 import Routes from "./routes";
-// import { Server } from "socket.io";
+import scoket from "socket.io";
+const { Server } = scoket;
 
 const PORT = process.env.PORT || 3000;
 
@@ -15,16 +16,16 @@ const routes = new Routes();
 
 const server = https.createServer(localHostSSL, routes.handler.bind(routes));
 
-// const io = new Server(server, {
-//   cors: {
-//     origin: "*",
-//     credentials: false,
-//   },
-// });
+const io = new Server(server, {
+  cors: {
+    origin: "*",
+    credentials: false,
+  },
+});
 
-// routes.setSocketInstance(io);
+routes.setSocketInstance(io);
 
-// io.on("connection", (sokect) => logger.info(`someone connected: ${sokect.id}`));
+io.on("connection", (sokect) => logger.info(`someone connected: ${sokect.id}`));
 
 const startServer = () => {
   const { address, port } = server.address();
