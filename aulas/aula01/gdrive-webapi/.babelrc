@@ -1,6 +1,7 @@
 {
-    "presets": ["@babel/env"]
+    "presets": ["@babel/preset-env"]
+ 
 }
 
-//Arquivo de configuração do babel, aqui posso configurar como os arquivos poderão ser manipulados,
+//Arquivo de configuração do babel, aqui posso configurar como os arquivos pode ser manipulados,
 //Ao utilizar este arquivo  após ter instalado o babel, parou de ocorrer o erro de token unexpected do jest

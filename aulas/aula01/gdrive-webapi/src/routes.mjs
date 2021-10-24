@@ -27,7 +27,9 @@ export default class Routes {
 
   handler(request, response) {
     response.setHeader("Access-Control-Allow-Origin", "*");
-    const chosen = this[request.method.toLowerCase() || this.defaultRoute];
+    const chosen = this[request.method.toLowerCase()] || this.defaultRoute;
+    //A linha acima atribui retorna uma função, que pode ser chamada assim: chosen()
+    //Ou com o apply como abaixo
     return chosen.apply(this, [request, response]);
   }
 }
