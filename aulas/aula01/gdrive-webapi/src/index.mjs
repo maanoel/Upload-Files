@@ -1,9 +1,8 @@
 import https from "https";
 import fs from "fs";
 import { logger } from "./logger.mjs";
-import Routes from "./routes";
-import scoket from "socket.io";
-const { Server } = scoket;
+import Routes from "./routes.mjs";
+import { Server } from "socket.io";
 
 const PORT = process.env.PORT || 3000;
 

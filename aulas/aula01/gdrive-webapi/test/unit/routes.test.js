@@ -1,5 +1,5 @@
 import { describe, test, expect } from "@jest/globals";
-import { Routes } from "./../../src/routes.mjs";
+import Routes from "./../../src/routes.mjs";
 
 describe("#Routes test suite", () => {
   describe("#todo example", () => {
@@ -7,7 +7,7 @@ describe("#Routes test suite", () => {
   });
 
   describe("#Routes test suite", () => {
-    Text("setSocket should store io instance", () => {
+    test("setSocket should store io instance", () => {
       const routes = new Routes();
       const ioObj = {
         to: (id) => ioObj,
@@ -18,8 +18,6 @@ describe("#Routes test suite", () => {
       expect(routes.io).toStrictEqual(ioObj);
     });
   });
-
-  descrube("");
 
   test("#teste teste", () => {
     expect(true).toBeTruthy();

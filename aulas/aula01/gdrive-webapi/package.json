@@ -5,8 +5,8 @@
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "node --experimental-modules src/index.mjs",
-    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand",
+    "start": "node --experimental-vm-modules src/index.mjs",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
     "test:watch": "NODE_OPTIONS=--experimental-vm-modules npx jest --watch --runInBand",
     "test:cov": "NODE_OPTIONS=--experimental-vm-modules npx jest --no-cache --runInBand --coverage"
   },
@@ -33,6 +33,6 @@
     "socket.io": "^4.3.1",
     "socket.io-client": "^4.3.2"
   },
-  "testEnvironment": "jest-environment-jsdom-sixteen",
+  "testEnvironment": "jest-environment-node",
   "transform": {}
 }
