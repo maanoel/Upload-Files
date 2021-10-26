@@ -7,8 +7,8 @@
   "scripts": {
     "start": "node --experimental-vm-modules src/index.mjs",
     "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
-    "test:watch": "NODE_OPTIONS=--experimental-vm-modules npx jest --watch --runInBand",
-    "test:cov": "NODE_OPTIONS=--experimental-vm-modules npx jest --no-cache --runInBand --coverage"
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch --runInBand",
+    "test:cov": "node --experimental-vm-modules node_modules/jest/bin/jest.js --no-cache --runInBand --coverage"
   },
   "keywords": [],
   "author": "",
