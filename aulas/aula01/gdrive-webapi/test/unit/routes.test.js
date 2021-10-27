@@ -96,4 +96,19 @@ describe("#Routes test suite", () => {
       expect(routes.get).toHaveBeenCalled();
     });
   });
+
+  describe("#handler", () => {});
+
+  describe("#get", () => {
+    test.skip("given methodo GET it chould list all file downloaded", async () => {
+      const fileStatusMock = [
+        {
+          size: 532017,
+          birthtime: "2021-10-27T02:50:45.789Z",
+          owner: "manoel.vitor",
+          file: "file.png",
+        },
+      ];
+    });
+  });
 });
