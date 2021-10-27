@@ -1,11 +1,8 @@
 import { describe, test, jest, expect } from "@jest/globals";
 import fs from "fs";
-import FileHelper from "../../src/fileHelper";
-
-import Routes from "./../../src/routes.mjs";
-
+import FileHelper from "../../src/fileHelper.mjs";
 describe("#fileHelper", () => {
-  describe("#getFileStatus", () => {
+  describe("#getFilesStatus", () => {
     test("it should return files statuses in corret format", async () => {
       const statMock = {
         dev: 1218264256,

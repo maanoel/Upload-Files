@@ -1,10 +1,28 @@
 import { describe, test, expect, jest } from "@jest/globals";
+
 import Routes from "./../../src/routes.mjs";
 
 describe("#Routes test suite", () => {
+  const defaultParams = {
+    request: {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      method: "",
+      body: {},
+    },
+    response: {
+      setHeader: jest.fn(),
+      writeHead: jest.fn(),
+      end: jest.fn(),
+    },
+    values: () => Object.values(defaultParams),
+  };
+
+  const routes = new Routes();
+
   describe("#Routes test suite", () => {
     test("setSocket should store io instance", () => {
-      const routes = new Routes();
       const ioObj = {
         to: (id) => ioObj,
         emit: (event, message) => {},
@@ -20,24 +38,7 @@ describe("#Routes test suite", () => {
   });
 
   describe("#handler", () => {
-    const defaultParams = {
-      request: {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-        method: "",
-        body: {},
-      },
-      response: {
-        setHeader: jest.fn(),
-        writeHead: jest.fn(),
-        end: jest.fn(),
-      },
-      values: () => Object.values(defaultParams),
-    };
-
     test("given an inexistent route it should choose default route", async () => {
-      const routes = new Routes();
       const params = { ...defaultParams };
 
       params.request.method = "inexistent";
@@ -47,7 +48,6 @@ describe("#Routes test suite", () => {
     });
 
     test("it should set any request with CORS enabled", async () => {
-      const routes = new Routes();
       const params = { ...defaultParams };
 
       params.request.method = "inexistent";
@@ -60,7 +60,6 @@ describe("#Routes test suite", () => {
     });
 
     test("given method OPTIONS it should choose options route", async () => {
-      const routes = new Routes();
       const params = { ...defaultParams };
 
       params.request.method = "OPTIONS";
@@ -84,7 +83,6 @@ describe("#Routes test suite", () => {
     });
 
     test("given method GET it should choose get route", async () => {
-      const routes = new Routes();
       const params = { ...defaultParams };
 
       params.request.method = "GET";
@@ -100,15 +98,30 @@ describe("#Routes test suite", () => {
   describe("#handler", () => {});
 
   describe("#get", () => {
-    test.skip("given methodo GET it chould list all file downloaded", async () => {
-      const fileStatusMock = [
+    test("given methodo GET it chould list all file downloaded", async () => {
+      const params = { ...defaultParams };
+
+      const filesStatusesMock = [
         {
-          size: 532017,
-          birthtime: "2021-10-27T02:50:45.789Z",
+          size: "532 kB",
+          lastModified: "2021-10-27T02:50:45.789Z",
           owner: "manoel.vitor",
-          file: "file.png",
+          file: "Teste.png",
         },
       ];
+
+      jest
+        .spyOn(routes.fileHelper, routes.fileHelper.getFilesStatus.name)
+        .mockResolvedValue(filesStatusesMock);
+
+      params.request.method = "GET";
+
+      await routes.handler(...params.values());
+
+      expect(params.response.writeHead).toHaveBeenCalledWith(200);
+      expect(params.response.end).toHaveBeenCalledWith(
+        JSON.stringify(filesStatusesMock)
+      );
     });
   });
 });
