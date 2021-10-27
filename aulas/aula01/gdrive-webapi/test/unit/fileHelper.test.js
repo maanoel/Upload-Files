@@ -45,15 +45,15 @@ describe("#fileHelper", () => {
 
       const expectResult = [
         {
-          size: "18 kb",
-          birthtime: statMock.birthtime,
+          size: "532 kB",
+          lastModified: statMock.birthtime,
           owner: mockUser,
           file: fileName,
         },
       ];
 
       expect(fs.promises.stat).toHaveBeenLastCalledWith("/tmp/" + fileName);
-      expect(result).toMatch(expectResult);
+      expect(result).toMatchObject(expectResult);
     });
   });
 });
