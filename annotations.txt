@@ -5,9 +5,21 @@ npm i pino@6.8 pino-pretty@5.1
 npm i socket.io@4.1
 npm rm remove
 npx jest --init 
+npm install -g win-node-env when message node_options is not a know command
 
-Usa o -D pois é um modulo de desenvolvimento, para testes e hostreload da aplicação.
+PENSAMENTOS
 
-Manha para remover comentários no visual studio code: 
+para resolver problemas na utilização do import no node, utilize o node --experimental-modules
+para dar start no projeto, utilizando o experimental eu tiver que modificar 
+o tipo dos meus arquivos para .mjs
 
-ctrl + F e digitar //* 
+Usa-se o -D pois é um modulo de desenvolvimento, para testes e hostreload da aplicação.
+
+Manha para remover comentários no visual studio code: ctrl + F e digitar //* 
+
+
+LIB FS
+
+fs.statSync(path) sincronamente retorna informações sobre o arquivo do path
+fs.readFileSync(path) sincronamento retorna os bytes do arquivo em buffe
+
