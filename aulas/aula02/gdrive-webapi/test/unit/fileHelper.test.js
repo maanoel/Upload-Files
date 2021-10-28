@@ -1,58 +1,56 @@
-import { describe, test, expect, jest } from "@jest/globals";
+import { describe, test, jest, expect } from "@jest/globals";
 import fs from "fs";
-import FileHelper from "../../src/fileHelper.js";
-
-import Routes from "./../../src/routes.js";
-
-describe("#FileHelper", () => {
+import FileHelper from "../../src/fileHelper.mjs";
+describe("#fileHelper", () => {
   describe("#getFilesStatus", () => {
-    test("it should return files statuses in correct format", async () => {
+    test("it should return files statuses in corret format", async () => {
       const statMock = {
-        dev: 16777220,
-        mode: 33188,
+        dev: 1218264256,
+        mode: 33206,
         nlink: 1,
-        uid: 501,
-        gid: 20,
+        uid: 0,
+        gid: 0,
         rdev: 0,
         blksize: 4096,
-        ino: 214187433,
-        size: 188188,
-        blocks: 368,
-        atimeMs: 1630702590337.3582,
-        mtimeMs: 1630702588444.2876,
-        ctimeMs: 1630702588452.0754,
-        birthtimeMs: 1630702588443.3276,
-        atime: "2021-09-03T20:56:30.337Z",
-        mtime: "2021-09-03T20:56:28.444Z",
-        ctime: "2021-09-03T20:56:28.452Z",
-        birthtime: "2021-09-03T20:56:28.443Z",
+        ino: 355221420608850500,
+        size: 532017,
+        blocks: 1040,
+        atimeMs: 1635303045789,
+        mtimeMs: 1635303077635.9998,
+        ctimeMs: 1635303077636.6533,
+        birthtimeMs: 1635303045789.0994,
+        atime: "2021-10-27T02:50:45.789Z",
+        mtime: "2021-10-27T02:51:17.636Z",
+        ctime: "2021-10-27T02:51:17.637Z",
+        birthtime: "2021-10-27T02:50:45.789Z",
       };
 
-      const mockUser = "erickwendel";
+      const mockUser = "manoel.vitor";
       process.env.USER = mockUser;
-      const filename = "file.png";
+
+      const fileName = "Teste.png";
 
       jest
         .spyOn(fs.promises, fs.promises.readdir.name)
-        .mockResolvedValue([filename]);
+        .mockResolvedValueOnce([fileName]);
 
       jest
         .spyOn(fs.promises, fs.promises.stat.name)
-        .mockResolvedValue(statMock);
+        .mockResolvedValueOnce(statMock);
 
       const result = await FileHelper.getFilesStatus("/tmp");
 
-      const expectedResult = [
+      const expectResult = [
         {
-          size: "188 kB",
+          size: "532 kB",
           lastModified: statMock.birthtime,
           owner: mockUser,
-          file: filename,
+          file: fileName,
         },
       ];
 
-      expect(fs.promises.stat).toHaveBeenCalledWith(`/tmp/${filename}`);
-      expect(result).toMatchObject(expectedResult);
+      expect(fs.promises.stat).toHaveBeenLastCalledWith("/tmp/" + fileName);
+      expect(result).toMatchObject(expectResult);
     });
   });
 });

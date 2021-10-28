@@ -1,174 +1,127 @@
-import {
-    describe,
-    test,
-    beforeEach,
-    expect,
-    jest
-} from '@jest/globals'
-import { logger } from '../../src/logger.js'
-import UploadHandler from '../../src/uploadHandler.js'
-import TestUtil from '../_util/testUtil.js'
-import Routes from './../../src/routes.js'
+import { describe, test, expect, jest } from "@jest/globals";
 
-describe('#Routes test suite', () => {
-    beforeEach(() => {
-        jest.spyOn(logger, 'info')
-            .mockImplementation()
-    })
+import Routes from "./../../src/routes.mjs";
 
-    const request = TestUtil.generateReadableStream(['some file bytes'])
-    const response = TestUtil.generateWritableStream(() => { })
+describe("#Routes test suite", () => {
+  const defaultParams = {
+    request: {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+      method: "",
+      body: {},
+    },
+    response: {
+      setHeader: jest.fn(),
+      writeHead: jest.fn(),
+      end: jest.fn(),
+    },
+    values: () => Object.values(defaultParams),
+  };
 
-    const defaultParams = {
-        request: Object.assign(request, {
-            headers: {
-                'Content-Type': 'multipart/form-data'
-            },
-            method: '',
-            body: {}
-        }),
-        response: Object.assign(response, {
-            setHeader: jest.fn(),
-            writeHead: jest.fn(),
-            end: jest.fn()
-        }),
-        values: () => Object.values(defaultParams)
-    }
+  const routes = new Routes();
 
-    describe('#setSocketInstance', () => {
-        test('setSocket should store io instance', () => {
-            const routes = new Routes()
-            const ioObj = {
-                to: (id) => ioObj,
-                emit: (event, message) => { }
-            }
+  describe("#Routes test suite", () => {
+    test("setSocket should store io instance", () => {
+      const ioObj = {
+        to: (id) => ioObj,
+        emit: (event, message) => {},
+      };
 
-            routes.setSocketInstance(ioObj)
-            expect(routes.io).toStrictEqual(ioObj)
-        })
-    })
-  
-    describe('#handler', () => {
+      routes.setSocketInstance(ioObj);
+      expect(routes.io).toStrictEqual(ioObj);
+    });
+  });
 
+  test("#teste teste", () => {
+    expect(true).toBeTruthy();
+  });
 
-        test('given an inexistent route it should choose default route', async () => {
-            const routes = new Routes()
-            const params = {
-                ...defaultParams
-            }
+  describe("#handler", () => {
+    test("given an inexistent route it should choose default route", async () => {
+      const params = { ...defaultParams };
 
-            params.request.method = 'inexistent'
-            await routes.handler(...params.values())
-            expect(params.response.end).toHaveBeenCalledWith('hello world')
-        })
+      params.request.method = "inexistent";
+      await routes.handler(...params.values());
 
-        test('it should set any request with CORS enabled', async () => {
-            const routes = new Routes()
-            const params = {
-                ...defaultParams
-            }
+      expect(params.response.end).toHaveBeenCalledWith("hello world");
+    });
 
-            params.request.method = 'inexistent'
-            await routes.handler(...params.values())
-            expect(params.response.setHeader)
-                .toHaveBeenCalledWith('Access-Control-Allow-Origin', '*')
-        })
+    test("it should set any request with CORS enabled", async () => {
+      const params = { ...defaultParams };
 
-        test('given method OPTIONS it should choose options route', async () => {
-            const routes = new Routes()
-            const params = {
-                ...defaultParams
-            }
+      params.request.method = "inexistent";
+      await routes.handler(...params.values());
 
-            params.request.method = 'OPTIONS'
-            await routes.handler(...params.values())
-            expect(params.response.writeHead).toHaveBeenCalledWith(204)
-            expect(params.response.end).toHaveBeenCalled()
-        })
+      expect(params.response.setHeader).toHaveBeenCalledWith(
+        "Access-Control-Allow-Origin",
+        "*"
+      );
+    });
 
-        test('given method POST it should choose post route', async () => {
-            const routes = new Routes()
-            const params = {
-                ...defaultParams
-            }
+    test("given method OPTIONS it should choose options route", async () => {
+      const params = { ...defaultParams };
 
-            params.request.method = 'POST'
-            jest.spyOn(routes, routes.post.name).mockResolvedValue()
+      params.request.method = "OPTIONS";
 
-            await routes.handler(...params.values())
-            expect(routes.post).toHaveBeenCalled()
+      await routes.handler(...params.values());
 
-        })
-        test('given method GET it should choose get route', async () => {
-            const routes = new Routes()
-            const params = {
-                ...defaultParams
-            }
-            jest.spyOn(routes, routes.get.name).mockResolvedValue()
+      expect(params.response.writeHead).toHaveBeenCalledWith(204);
+    });
 
-            params.request.method = 'GET'
-            await routes.handler(...params.values())
-            expect(routes.get).toHaveBeenCalled()
+    test("given method POST it should choose post route", async () => {
+      const routes = new Routes();
+      const params = { ...defaultParams };
 
-        })
-    })
+      params.request.method = "POST";
 
-    describe('#get', () => {
-        test('given method GET it should list all files downloaded', async () => {
-            const routes = new Routes()
-            const params = {
-                ...defaultParams
-            }
+      jest.spyOn(routes, routes.post.name).mockResolvedValue();
 
-            const filesStatusesMock = [
-                {
-                    size: "188 kB",
-                    lastModified: '2021-09-03T20:56:28.443Z',
-                    owner: 'erickwendel',
-                    file: 'file.txt'
-                }
-            ]
-            jest.spyOn(routes.fileHelper, routes.fileHelper.getFilesStatus.name)
-                .mockResolvedValue(filesStatusesMock)
+      await routes.handler(...params.values());
 
-            params.request.method = 'GET'
-            await routes.handler(...params.values())
+      expect(routes.post).toHaveBeenCalled();
+    });
 
+    test("given method GET it should choose get route", async () => {
+      const params = { ...defaultParams };
 
-            expect(params.response.writeHead).toHaveBeenCalledWith(200)
-            expect(params.response.end).toHaveBeenCalledWith(JSON.stringify(filesStatusesMock))
+      params.request.method = "GET";
 
-        })
-    })
+      jest.spyOn(routes, routes.get.name).mockResolvedValue();
 
-    describe('#post', () => {
-        test('it should validate post route workflow', async () => {
-            const routes = new Routes('/tmp')
-            const options = {
-                ...defaultParams
-            }
-            options.request.method = 'POST'
-            options.request.url = '?socketId=10' 
+      await routes.handler(...params.values());
 
-             
-            jest.spyOn(
-                UploadHandler.prototype,
-                UploadHandler.prototype.registerEvents.name
-            ).mockImplementation((headers, onFinish) => {
-                const writable = TestUtil.generateWritableStream(() => {})
-                writable.on("finish", onFinish)
+      expect(routes.get).toHaveBeenCalled();
+    });
+  });
 
-                return writable
-            })
+  describe("#handler", () => {});
 
-            await routes.handler(...options.values())
+  describe("#get", () => {
+    test("given methodo GET it chould list all file downloaded", async () => {
+      const params = { ...defaultParams };
 
-            expect(UploadHandler.prototype.registerEvents).toHaveBeenCalled()
-            expect(options.response.writeHead).toHaveBeenCalledWith(200)
+      const filesStatusesMock = [
+        {
+          size: "532 kB",
+          lastModified: "2021-10-27T02:50:45.789Z",
+          owner: "manoel.vitor",
+          file: "Teste.png",
+        },
+      ];
 
-            const expectedResult = JSON.stringify({ result: 'Files uploaded with success! ' })
-            expect(options.response.end).toHaveBeenCalledWith(expectedResult)
+      jest
+        .spyOn(routes.fileHelper, routes.fileHelper.getFilesStatus.name)
+        .mockResolvedValue(filesStatusesMock);
 
-        })
-    })
-})
+      params.request.method = "GET";
+
+      await routes.handler(...params.values());
+
+      expect(params.response.writeHead).toHaveBeenCalledWith(200);
+      expect(params.response.end).toHaveBeenCalledWith(
+        JSON.stringify(filesStatusesMock)
+      );
+    });
+  });
+});

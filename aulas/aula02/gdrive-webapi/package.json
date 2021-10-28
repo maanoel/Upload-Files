@@ -1,27 +1,39 @@
 {
-  "name": "@erickwendel/gdrive-webapi",
+  "name": "gdrive-webapi",
   "version": "1.0.0",
   "description": "",
   "main": "index.js",
   "type": "module",
   "scripts": {
-    "start": "mkdir -p downloads && node src/index.js",
-    "test": "NODE_OPTIONS=--experimental-vm-modules npx jest --runInBand",
-    "test:watch": "NODE_OPTIONS=--experimental-vm-modules npx jest --watch --runInBand",
-    "test:cov": "NODE_OPTIONS=--experimental-vm-modules npx jest --no-cache --runInBand --coverage"
+    "start": "node --experimental-vm-modules src/index.mjs",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js --runInBand",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch --runInBand",
+    "test:cov": "node --experimental-vm-modules node_modules/jest/bin/jest.js --no-cache --runInBand --coverage"
   },
   "keywords": [],
-  "author": "erickwendel",
+  "author": "",
   "license": "ISC",
   "devDependencies": {
-    "jest": "^27.1.0"
+    "@babel/plugin-transform-modules-commonjs": "^7.15.4",
+    "@babel/preset-env": "^7.15.8",
+    "babel-core": "^7.0.0-bridge.0",
+    "babel-jest": "^27.3.1",
+    "babel-loader": "^7.1.5",
+    "babel-preset-es2015": "^6.24.1",
+    "babel-preset-stage-0": "^6.24.1",
+    "jest": "^27.3.1"
   },
   "dependencies": {
-    "busboy": "^0.3.1",
-    "form-data": "4.0",
-    "pino": "6.8",
-    "pino-pretty": "5.1",
+    "babel-plugin-transform-runtime": "^6.23.0",
+    "babel-preset-env": "^1.7.0",
+    "cross-env": "^7.0.3",
+    "esm": "^3.2.25",
+    "pino": "^6.8.0",
+    "pino-pretty": "^5.1.3",
     "pretty-bytes": "5.6",
-    "socket.io": "4.1"
-  }
+    "socket.io": "^4.3.1",
+    "socket.io-client": "^4.3.2"
+  },
+  "testEnvironment": "jest-environment-node",
+  "transform": {}
 }
