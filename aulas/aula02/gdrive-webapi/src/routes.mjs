@@ -7,9 +7,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const defaultDownloadsFolder = resolve(__dirname, "../", "downloads");
 
 export default class Routes {
-  io;
-  fileHelper;
-
   constructor(downloadsFolder = defaultDownloadsFolder) {
     this.downloadsFolder = downloadsFolder;
     this.fileHelper = FileHelper;

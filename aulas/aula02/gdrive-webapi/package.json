@@ -26,6 +26,7 @@
   "dependencies": {
     "babel-plugin-transform-runtime": "^6.23.0",
     "babel-preset-env": "^1.7.0",
+    "busboy": "^0.3.1",
     "cross-env": "^7.0.3",
     "esm": "^3.2.25",
     "pino": "^6.8.0",
