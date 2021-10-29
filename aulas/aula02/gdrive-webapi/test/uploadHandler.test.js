@@ -1,5 +1,6 @@
 import { describe, test, expect, jest } from "@jest/globals";
 import UploadHandler from "../src/uploadHandler.mjs";
+import TestUtil from "./_util/testUtil";
 
 describe("#UploadHandler test suite", () => {
   const ioObj = {
@@ -22,6 +23,9 @@ describe("#UploadHandler test suite", () => {
       const fn = jest.fn();
 
       uploadHandler.registerEvents(headers, fn);
+
+      const readable = TestUtil.generateReadableStream(["chunk", "of", "data"]);
+      readable.on("data", (msg) => console.log("msg", msg));
 
       expect(uploadHandler.onFile).toHaveBeenCalled();
       expect(fn).toHaveBeenCalled();
