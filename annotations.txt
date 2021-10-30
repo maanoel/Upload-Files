@@ -22,4 +22,4 @@ LIB FS
 
 fs.statSync(path) sincronamente retorna informações sobre o arquivo do path
 fs.readFileSync(path) sincronamento retorna os bytes do arquivo em buffe
-
+fs.createReadStream(path) cria um readStream com callback de um chunk

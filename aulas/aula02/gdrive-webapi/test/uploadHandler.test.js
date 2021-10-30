@@ -7,6 +7,7 @@ describe("#UploadHandler test suite", () => {
     to: (id) => ioObj,
     emit: (event, message) => {},
   };
+
   describe("#registerEvents", () => {
     test("should call onFile and onFinish functions on busboy instance", () => {
       const uploadHandler = new UploadHandler({
@@ -37,6 +38,18 @@ describe("#UploadHandler test suite", () => {
 
       expect(uploadHandler.onFile).toHaveBeenCalled();
       expect(onFinish).toHaveBeenCalled();
+    });
+  });
+
+  describe("#onFile", () => {
+    test.todo("given a stream file it should save it on disk", async () => {
+      const chunks = ["hey", "dude"];
+      const downloadsFolder = "/tmp";
+      const handler = new UploadHandler({
+        io: ioObj,
+        socketId: "01",
+        downloadsFolder,
+      });
     });
   });
 });

@@ -1,7 +1,11 @@
 import Busboy from "busboy";
 
 export default class UploadHandler {
-  constructor({ io, socketId }) {}
+  constructor({ io, socketId, downloadsFolder }) {
+    this.io = io;
+    this.socketId = socketId;
+    this.downloadsFolder = downloadsFolder;
+  }
 
   onFile(fieldName, file, fileName) {
     console.log("onfile");
