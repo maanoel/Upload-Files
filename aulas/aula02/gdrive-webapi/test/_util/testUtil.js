@@ -14,11 +14,11 @@ export default class TestUtil {
     });
   }
 
-  static generateWritableStream(fn) {
+  static generateWritableStream(onData) {
     return new Writable({
       objectMode: true,
       write(chunk, encoding, callback) {
-        fn(chunk);
+        onData(chunk);
         callback(null, chunk);
       },
     });

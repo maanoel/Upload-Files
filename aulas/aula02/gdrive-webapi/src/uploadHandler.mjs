@@ -1,4 +1,6 @@
 import Busboy from "busboy";
+import { pipeline } from "stream/promises";
+import fs from "fs";
 
 export default class UploadHandler {
   constructor({ io, socketId, downloadsFolder }) {
@@ -7,8 +9,17 @@ export default class UploadHandler {
     this.downloadsFolder = downloadsFolder;
   }
 
-  onFile(fieldName, file, fileName) {
-    console.log("onfile");
+  handlerFileBytes() {}
+
+  async onFile(fieldName, file, fileName) {
+    const saveTo = this.downloadsFolder + "/" + fileName;
+    await pipeline(
+      file,
+      this.handlerFileBytes.apply(this, [fileName]),
+      fs.createWriteStream(saveTo)
+    );
+
+    logger.info(`File [${fileName}] finished`);
   }
 
   registerEvents(headers, onFinish) {

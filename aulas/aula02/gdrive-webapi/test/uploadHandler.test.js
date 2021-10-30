@@ -1,6 +1,7 @@
 import { describe, test, expect, jest } from "@jest/globals";
 import UploadHandler from "../src/uploadHandler.mjs";
 import TestUtil from "./_util/testUtil";
+import fs from "fs";
 
 describe("#UploadHandler test suite", () => {
   const ioObj = {
@@ -50,6 +51,14 @@ describe("#UploadHandler test suite", () => {
         socketId: "01",
         downloadsFolder,
       });
+
+      const onData = jest.fn();
+
+      jest
+        .spyOn(fs, fs.createWriteStream.name)
+        .mockImplementation(() => TestUtil.generateWritableStream(onData));
+
+      jest.spyOn(handler, handler.handlerFileBytes.name);
     });
   });
 });
