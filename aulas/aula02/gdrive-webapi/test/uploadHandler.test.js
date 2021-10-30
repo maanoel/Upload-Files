@@ -2,7 +2,7 @@ import { describe, test, expect, jest } from "@jest/globals";
 import UploadHandler from "../src/uploadHandler.mjs";
 import TestUtil from "./_util/testUtil";
 import fs from "fs";
-
+import { resolve } from "path";
 describe("#UploadHandler test suite", () => {
   const ioObj = {
     to: (id) => ioObj,
@@ -35,30 +35,46 @@ describe("#UploadHandler test suite", () => {
 
       busBoyInstance.listeners("finish")[0].call();
 
-      console.log("eventos", busBoyInstance.listeners("finish"));
-
       expect(uploadHandler.onFile).toHaveBeenCalled();
       expect(onFinish).toHaveBeenCalled();
     });
   });
 
   describe("#onFile", () => {
-    test.todo("given a stream file it should save it on disk", async () => {
+    test("given a stream file it should save it on disk", async () => {
+      const onTransform = jest.fn();
+      const onData = jest.fn();
       const chunks = ["hey", "dude"];
-      const downloadsFolder = "/tmp";
+
+      const params = {
+        fieldName: "video",
+        file: TestUtil.generateReadableStream(chunks),
+        fileName: "mockFile.mov",
+      };
+      const downloadsFolder = "C://tmp";
       const handler = new UploadHandler({
         io: ioObj,
         socketId: "01",
         downloadsFolder,
       });
 
-      const onData = jest.fn();
-
       jest
         .spyOn(fs, fs.createWriteStream.name)
         .mockImplementation(() => TestUtil.generateWritableStream(onData));
 
-      jest.spyOn(handler, handler.handlerFileBytes.name);
+      jest
+        .spyOn(handler, handler.handlerFileBytes.name)
+        .mockImplementation(() =>
+          TestUtil.generateTransformStream(onTransform)
+        );
+
+      await handler.onFile(...Object.values(params));
+
+      expect(onData.mock.calls.join()).toEqual(chunks.join());
+      expect(onTransform.mock.calls.join()).toEqual(chunks.join());
+
+      const expectedFileName = handler.downloadsFolder + "/" + params.fileName;
+      expect(fs.createWriteStream).toHaveBeenCalledWith(expectedFileName);
     });
   });
 });

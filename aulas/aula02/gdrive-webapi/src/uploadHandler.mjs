@@ -1,6 +1,7 @@
 import Busboy from "busboy";
 import { pipeline } from "stream/promises";
 import fs from "fs";
+import { logger } from "./logger.mjs";
 
 export default class UploadHandler {
   constructor({ io, socketId, downloadsFolder }) {
@@ -14,8 +15,11 @@ export default class UploadHandler {
   async onFile(fieldName, file, fileName) {
     const saveTo = this.downloadsFolder + "/" + fileName;
     await pipeline(
+      //1- pega readable stream
       file,
+      //2 filtrar e converter
       this.handlerFileBytes.apply(this, [fileName]),
+      // é a saida, o writablestream
       fs.createWriteStream(saveTo)
     );
 
