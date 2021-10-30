@@ -2,7 +2,7 @@ import { describe, test, expect, jest } from "@jest/globals";
 import UploadHandler from "../src/uploadHandler.mjs";
 import TestUtil from "./_util/testUtil";
 import fs from "fs";
-import { resolve } from "path";
+import { pipeline } from "stream/promises";
 describe("#UploadHandler test suite", () => {
   const ioObj = {
     to: (id) => ioObj,
@@ -75,6 +75,32 @@ describe("#UploadHandler test suite", () => {
 
       const expectedFileName = handler.downloadsFolder + "/" + params.fileName;
       expect(fs.createWriteStream).toHaveBeenCalledWith(expectedFileName);
+    });
+  });
+
+  describe("#handleFileBytes", () => {
+    test("should call emit function and it is a transform stream", async () => {
+      jest.spyOn(ioObj, ioObj.to.name);
+      jest.spyOn(ioObj, ioObj.emit.name);
+
+      const handler = new UploadHandler({ io: ioObj, socketId: "01" });
+
+      const messages = ["hello"];
+      const source = TestUtil.generateReadableStream(messages);
+      const onWrite = jest.fn();
+      const target = TestUtil.generateWritableStream(onWrite);
+
+      await pipeline(source, handler.handlerFileBytes("filename.txt"), target);
+
+      expect(ioObj.to).toHaveBeenCalledTimes(messages.length);
+      expect(ioObj.emit).toHaveBeenCalledTimes(messages.length);
+
+      //se o handlerFileBytes for um transformStream nosso
+      //pipeline vai continuar o processo passando os dados
+      //para frente e chamar nossa função no target a cada chunk
+
+      expect(onWrite).toHaveBeenCalledTimes(messages.length);
+      expect(onWrite.mock.calls.join()).toEqual(messages.join());
     });
   });
 });
