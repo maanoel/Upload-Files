@@ -20,15 +20,23 @@ describe("#UploadHandler test suite", () => {
         "content-type": "multipart/form-data; boundary=",
       };
 
-      const fn = jest.fn();
+      const onFinish = jest.fn();
+      const fileStream = TestUtil.generateReadableStream([
+        "chunk",
+        "of",
+        "data",
+      ]);
 
-      uploadHandler.registerEvents(headers, fn);
+      const busBoyInstance = uploadHandler.registerEvents(headers, onFinish);
 
-      const readable = TestUtil.generateReadableStream(["chunk", "of", "data"]);
-      readable.on("data", (msg) => console.log("msg", msg));
+      busBoyInstance.emit("file", "fieldName", fileStream, "filename.txt");
+
+      busBoyInstance.listeners("finish")[0].call();
+
+      console.log("eventos", busBoyInstance.listeners("finish"));
 
       expect(uploadHandler.onFile).toHaveBeenCalled();
-      expect(fn).toHaveBeenCalled();
+      expect(onFinish).toHaveBeenCalled();
     });
   });
 });
