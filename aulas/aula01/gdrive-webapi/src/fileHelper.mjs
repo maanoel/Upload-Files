@@ -6,9 +6,6 @@ export default class FileHelper {
     //O readdir lista o conteúdo de um direito retornando as informações dos arquivos em um array
     const currentFiles = await fs.promises.readdir(downloadsFolder);
 
-    console.log("downloadsFolder: " + downloadsFolder);
-    console.log("currentFiles: " + currentFiles);
-
     //o stat é utilizado para obter informações sobre um arquivo, dentre as informações, estão o birthtime e o size
     const statuses = await Promise.all(
       currentFiles.map((file) => fs.promises.stat(downloadsFolder + "/" + file))
@@ -17,7 +14,6 @@ export default class FileHelper {
     const fileStatuses = [];
 
     for (const fileIndex in currentFiles) {
-      console.log(statuses[fileIndex]);
       const { birthtime, size } = statuses[fileIndex];
 
       fileStatuses.push({
