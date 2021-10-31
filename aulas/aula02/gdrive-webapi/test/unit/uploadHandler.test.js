@@ -1,13 +1,19 @@
-import { describe, test, expect, jest } from "@jest/globals";
-import UploadHandler from "../src/uploadHandler.mjs";
-import TestUtil from "./_util/testUtil";
+import { describe, test, expect, jest, beforeEach } from "@jest/globals";
+import UploadHandler from "../../src/uploadHandler.mjs";
+import TestUtil from "../_util/testUtil";
 import fs from "fs";
 import { pipeline } from "stream/promises";
+import { logger } from "../../src/logger.mjs";
+
 describe("#UploadHandler test suite", () => {
   const ioObj = {
     to: (id) => ioObj,
     emit: (event, message) => {},
   };
+
+  beforeEach(() => {
+    jest.spyOn(logger, "info").mockImplementation();
+  });
 
   describe("#registerEvents", () => {
     test("should call onFile and onFinish functions on busboy instance", () => {
@@ -85,6 +91,8 @@ describe("#UploadHandler test suite", () => {
 
       const handler = new UploadHandler({ io: ioObj, socketId: "01" });
 
+      jest.spyOn(handler, handler.canExecute.name).mockReturnValueOnce(true);
+
       const messages = ["hello"];
       const source = TestUtil.generateReadableStream(messages);
       const onWrite = jest.fn();
@@ -102,5 +110,27 @@ describe("#UploadHandler test suite", () => {
       expect(onWrite).toHaveBeenCalledTimes(messages.length);
       expect(onWrite.mock.calls.join()).toEqual(messages.join());
     });
+  });
+
+  describe("#canExecute", () => {
+    test("should return true when time is later than specified delay", () => {
+      const timerDelay = 1000;
+      const uploadHandler = new UploadHandler({
+        io: {},
+        socketId: "",
+        messageTimeDelay: timerDelay,
+      });
+
+      const tickNow = TestUtil.getTimeFromDate("2021-07-01 00:03");
+      TestUtil.mockDateNow([tickNow]);
+
+      const tickNowThreeSecondsBefore =
+        TestUtil.getTimeFromDate("2021-07-01 00:00");
+      const lastExecution = tickNowThreeSecondsBefore;
+
+      const result = uploadHandler.canExecute(lastExecution);
+      expect(result).toBeTruthy();
+    });
+    test.todo("should return false when time isn't later than specified delay");
   });
 });
