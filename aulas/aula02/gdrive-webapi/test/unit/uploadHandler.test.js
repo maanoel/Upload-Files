@@ -121,16 +121,30 @@ describe("#UploadHandler test suite", () => {
         messageTimeDelay: timerDelay,
       });
 
-      const tickNow = TestUtil.getTimeFromDate("2021-07-01 00:03");
-      TestUtil.mockDateNow([tickNow]);
+      const now = TestUtil.getTimeFromDate("2021-07-01 00:03");
+      TestUtil.mockDateNow([now]);
 
-      const tickNowThreeSecondsBefore =
-        TestUtil.getTimeFromDate("2021-07-01 00:00");
-      const lastExecution = tickNowThreeSecondsBefore;
+      const lastExecution = TestUtil.getTimeFromDate("2021-07-01 00:00");
 
       const result = uploadHandler.canExecute(lastExecution);
       expect(result).toBeTruthy();
     });
-    test.todo("should return false when time isn't later than specified delay");
+
+    test("should return false when time isn't later than specified delay", () => {
+      const timerDelay = 1000;
+      const uploadHandler = new UploadHandler({
+        io: {},
+        socketId: "",
+        messageTimeDelay: timerDelay,
+      });
+
+      const now = TestUtil.getTimeFromDate("2021-07-01 00:01");
+      TestUtil.mockDateNow([now]);
+
+      const lastExecution = TestUtil.getTimeFromDate("2021-07-01 00:00");
+
+      const result = uploadHandler.canExecute(lastExecution);
+      expect(result).toBeTruthy();
+    });
   });
 });
