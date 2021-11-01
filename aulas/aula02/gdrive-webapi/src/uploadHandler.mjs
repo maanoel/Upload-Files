@@ -13,10 +13,12 @@ export default class UploadHandler {
   }
 
   canExecute(lastExecution) {
-    return Date.now() - lastExecution > this.messageTimeDelay;
+    return Date.now() - lastExecution >= this.messageTimeDelay;
   }
 
   handlerFileBytes(fileName) {
+    console.log("oi");
+
     this.lastMessageSent = Date.now();
 
     async function* handlerData(source) {
@@ -30,6 +32,7 @@ export default class UploadHandler {
           continue;
         }
 
+        this.lastMessageSent = Date.now();
         this.io
           .to(this.socketId)
           .emit(this.ON_UPLOAD_EVENT, { processedAlready, fileName });

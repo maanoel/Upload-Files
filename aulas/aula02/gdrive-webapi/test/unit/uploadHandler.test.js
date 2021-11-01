@@ -110,6 +110,60 @@ describe("#UploadHandler test suite", () => {
       expect(onWrite).toHaveBeenCalledTimes(messages.length);
       expect(onWrite.mock.calls.join()).toEqual(messages.join());
     });
+
+    test.only("given message timerDelay as 2secs it should emit only two mesages during 3 seconds period", async () => {
+      jest.spyOn(ioObj, ioObj.emit.name);
+
+      const day = "2021-07-01 01:01";
+      //Date.now do this.lastMessageSent em handlerBytes
+      const onFirstLastMessageSent = TestUtil.getTimeFromDate(`${day}:00`);
+
+      //Hello chegou
+      const onFirstCanExecute = TestUtil.getTimeFromDate(`${day}:02`);
+
+      const onSecondUpdateLastMessageSent = onFirstCanExecute;
+      //segundo hello, está fora da janela de tempo
+
+      const onSecondCanExecute = TestUtil.getTimeFromDate(`${day}:03`);
+
+      // => world
+      const onThirdCanExecute = TestUtil.getTimeFromDate(`${day}:04`);
+
+      TestUtil.mockDateNow([
+        onFirstLastMessageSent,
+        onFirstCanExecute,
+        onSecondUpdateLastMessageSent,
+        onSecondCanExecute,
+        onThirdCanExecute,
+      ]);
+
+      const fileName = "filename.avi";
+      const messages = ["hello", "hello", "world"];
+      const expectedMessageSent = 2;
+      const messageTimeDelay = 2000;
+
+      const source = TestUtil.generateReadableStream(messages);
+      const handler = new UploadHandler({
+        io: ioObj,
+        socketId: "01",
+        messageTimeDelay,
+      });
+
+      await pipeline(source, handler.handlerFileBytes(fileName));
+      expect(ioObj.emit).toHaveBeenCalledTimes(expectedMessageSent);
+
+      const [firstCallResult, secondCallResult] = ioObj.emit.mock.calls;
+
+      expect(firstCallResult).toEqual([
+        handler.ON_UPLOAD_EVENT,
+        { processedAlready: "hello".length, fileName },
+      ]);
+
+      expect(secondCallResult).toEqual([
+        handler.ON_UPLOAD_EVENT,
+        { processedAlready: messages.join("").length, fileName },
+      ]);
+    });
   });
 
   describe("#canExecute", () => {
