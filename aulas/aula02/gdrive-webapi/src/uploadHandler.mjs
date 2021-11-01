@@ -17,8 +17,6 @@ export default class UploadHandler {
   }
 
   handlerFileBytes(fileName) {
-    console.log("oi");
-
     this.lastMessageSent = Date.now();
 
     async function* handlerData(source) {
@@ -54,7 +52,7 @@ export default class UploadHandler {
       //2 filtrar e converter
       this.handlerFileBytes.apply(this, [fileName]),
 
-      // é a saida, o writablestream
+      // ï¿½ a saida, o writablestream
       fs.createWriteStream(saveTo)
     );
 

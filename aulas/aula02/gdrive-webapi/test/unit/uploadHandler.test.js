@@ -111,7 +111,7 @@ describe("#UploadHandler test suite", () => {
       expect(onWrite.mock.calls.join()).toEqual(messages.join());
     });
 
-    test.only("given message timerDelay as 2secs it should emit only two mesages during 2 seconds period", async () => {
+    test("given message timerDelay as 2secs it should emit only two mesages during 2 seconds period", async () => {
       jest.spyOn(ioObj, ioObj.emit.name);
 
       const day = "2021-07-01 01:01";
@@ -186,17 +186,17 @@ describe("#UploadHandler test suite", () => {
     });
 
     test("should return false when time isn't later than specified delay", () => {
-      const timerDelay = 1000;
+      const timerDelay = 3000;
       const uploadHandler = new UploadHandler({
         io: {},
         socketId: "",
         messageTimeDelay: timerDelay,
       });
 
-      const now = TestUtil.getTimeFromDate("2021-07-01 00:00:02");
+      const now = TestUtil.getTimeFromDate("2021-07-01 11:11:02");
       TestUtil.mockDateNow([now]);
 
-      const lastExecution = TestUtil.getTimeFromDate("2021-07-01 00:00:01");
+      const lastExecution = TestUtil.getTimeFromDate("2021-07-01 11:11:00");
 
       const result = uploadHandler.canExecute(lastExecution);
       expect(result).toBeFalsy();

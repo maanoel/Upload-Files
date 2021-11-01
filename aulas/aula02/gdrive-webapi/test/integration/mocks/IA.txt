@@ -1,0 +1,4 @@
+1- Classificadores são treinados para permitir identificar outros possíveis padrões que estejam congruentes com o que ele viu durante seu treinamento.
+
+2- 
+
