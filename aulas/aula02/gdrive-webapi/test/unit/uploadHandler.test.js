@@ -111,10 +111,12 @@ describe("#UploadHandler test suite", () => {
       expect(onWrite.mock.calls.join()).toEqual(messages.join());
     });
 
-    test.only("given message timerDelay as 2secs it should emit only two mesages during 3 seconds period", async () => {
+    test.only("given message timerDelay as 2secs it should emit only two mesages during 2 seconds period", async () => {
       jest.spyOn(ioObj, ioObj.emit.name);
 
       const day = "2021-07-01 01:01";
+      const twoSecondPeriod = 2000;
+
       //Date.now do this.lastMessageSent em handlerBytes
       const onFirstLastMessageSent = TestUtil.getTimeFromDate(`${day}:00`);
 
@@ -140,13 +142,12 @@ describe("#UploadHandler test suite", () => {
       const fileName = "filename.avi";
       const messages = ["hello", "hello", "world"];
       const expectedMessageSent = 2;
-      const messageTimeDelay = 2000;
 
       const source = TestUtil.generateReadableStream(messages);
       const handler = new UploadHandler({
         io: ioObj,
         socketId: "01",
-        messageTimeDelay,
+        messageTimeDelay: twoSecondPeriod,
       });
 
       await pipeline(source, handler.handlerFileBytes(fileName));
