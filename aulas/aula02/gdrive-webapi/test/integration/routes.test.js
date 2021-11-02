@@ -37,7 +37,7 @@ describe("#Routes integration test", () => {
       socketId: "01",
     });
 
-    test.only("should upload file to the folder ", async () => {
+    test("should upload file to the folder ", async () => {
       const fileName = "IA.txt";
       const fileStream = fs.createReadStream(
         `./test/integration/mocks/${fileName}`
@@ -70,6 +70,13 @@ describe("#Routes integration test", () => {
 
       const dirAfter = await fs.promises.readdir(defaultDownloadsFolder);
       expect(dirAfter).toEqual([fileName]);
+
+      expect(defaultParams.response.writeHead).toHaveBeenCalledWith(200);
+      const expectedResult = JSON.stringify({
+        result: "Files upload with success!",
+      });
+
+      expect(defaultParams.response.end).toHaveBeenCalledWith(expectedResult);
     });
   });
 });

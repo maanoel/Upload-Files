@@ -16,5 +16,10 @@ export default {
   },
   watchPathIgnorePatterns: ["node_modules"],
   transformIgnorePatterns: ["node_modules"],
-  collectCoverageFrom: ["src/**/*.js", "!src/**/index.js"],
+  collectCoverageFrom: [
+    "src/**/*.js",
+    "src/**/*.mjs",
+    "!src/**/index.js",
+    "!src/**/index.mjs",
+  ],
 };
